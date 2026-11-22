@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>JARVIS - Next-Gen AI System for Windows & Android</title>
+  
+  <!-- PWA & Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#00f0ff">
+  <meta name="description" content="JARVIS - Advanced AI Virtual Assistant interface designed for Windows and Android with voice interaction, real-time telemetry, and futuristic sci-fi UX.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="JARVIS">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Background Particle & Grid Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="app-wrapper">
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="brand-icon">
+          <div class="core-dot"></div>
+        </div>
+        <div class="brand-text">JARVIS</div>
+        <span class="brand-badge">OS v4.2</span>
+      </div>
+
+      <nav class="nav-links">
+        <a href="#hero" class="nav-link active">Home</a>
+        <a href="#console" class="nav-link">AI Console</a>
+        <a href="#modules" class="nav-link">Control Grid</a>
+        <a href="#features" class="nav-link">Capabilities</a>
+        <a href="#downloads" class="nav-link">Install & Apps</a>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Theme Switcher -->
+        <select id="theme-selector" class="theme-select" title="Change Iron Man Armor Theme">
+          <option value="default">Armor: Mark VII (Cyan)</option>
+          <option value="mark85">Armor: Mark 85 (Hot Rod Red)</option>
+          <option value="stealth">Armor: Stealth (Emerald)</option>
+        </select>
+
+        <!-- Sound Toggle -->
+        <button id="sound-btn" class="sound-toggle-btn" title="Toggle Sci-Fi SFX">
+          🔊 SFX ON
+        </button>
+
+        <!-- AI Bridges Key Button -->
+        <button id="api-modal-btn" class="api-key-btn" title="Configure Gemini & ChatGPT API Keys">
+          ⚡ Connect AI Brains
+        </button>
+
+        <div class="status-pill">
+          <div class="status-indicator"></div>
+          <span id="conn-status">ONLINE</span>
+        </div>
+        <button id="pwa-install-btn" class="btn-install" style="display: none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Install App
+        </button>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- Hero Section -->
+      <section id="hero" class="hero-section">
+        <div class="hero-content">
+          <div class="hero-tag">// QUANTUM NEURAL INTERFACE</div>
+          <h1 class="hero-title">
+            Just A Rather <br>
+            Very <span class="glow">Intelligent System</span>
+          </h1>
+          <p class="hero-desc">
+            Empower your workflow across <strong>Windows</strong> and <strong>Android</strong> with ultra-fast speech recognition, holographic telemetry, smart automation, and responsive AI intelligence.
+          </p>
+
+          <div class="hero-buttons">
+            <button class="btn-primary" onclick="scrollToConsole()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Activate Console
+            </button>
+            <button class="btn-secondary" onclick="speakWelcome()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              Voice Diagnostics
+            </button>
+          </div>
+
+          <div class="platform-badges">
+            <div class="platform-item">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.949-1.899"/></svg>
+              <span>Windows 10/11 Desktop</span>
+            </div>
+            <div class="platform-item">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.4143 13.8533 8.0818 12 8.0818c-1.8534 0-3.5902.3325-5.1368.868L4.841 5.4468a.416.416 0 00-.5677-.1521.416.416 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/></svg>
+              <span>Android Mobile & Tablet</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ARC Reactor Cybernetic Visualizer -->
+        <div class="reactor-container">
+          <div class="arc-reactor" id="reactor-visualizer" title="Click to trigger JARVIS Voice">
+            <div class="ring ring-outer"></div>
+            <div class="ring ring-middle"></div>
+            <div class="ring ring-inner"></div>
+            <div class="core-sphere" id="core-button">
+              <div class="core-audio-bars">
+                <div class="audio-bar"></div>
+                <div class="audio-bar"></div>
+                <div class="audio-bar"></div>
+                <div class="audio-bar"></div>
+                <div class="audio-bar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Live Interactive Console & Voice Assistant -->
+      <section id="console" class="assistant-section">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+            <span>TACTICAL AI CONSOLE</span>
+          </div>
+          <div class="panel-controls">
+            <span class="sys-stat" id="fps-counter">FPS: 60</span>
+            <span class="sys-stat" id="latency-counter">LATENCY: 12ms</span>
+            <span class="sys-stat" id="clock-display">00:00:00</span>
+          </div>
+        </div>
+
+        <div class="console-layout">
+          <!-- Terminal / Chat Stream -->
+          <div class="chat-container">
+            <div class="ai-engine-selector">
+              <span>ACTIVE INTELLIGENCE:</span>
+              <select id="ai-engine-select" onchange="switchAiEngine(this.value)">
+                <option value="gemini">Google Gemini 1.5 Flash</option>
+                <option value="chatgpt">OpenAI ChatGPT (GPT-4o-mini)</option>
+                <option value="local">JARVIS Autonomous Offline Heuristic</option>
+              </select>
+              <span id="engine-status-badge" style="color: var(--cyan-glow); font-size: 0.7rem;">[STANDBY]</span>
+            </div>
+
+            <div class="chat-history" id="chat-history">
+              <div class="chat-bubble jarvis">
+                <span class="sender-tag">// JARVIS CORE SYSTEM</span>
+                Greetings, sir. Neural pathways connected to Gemini, ChatGPT, system time/date registers, and web applications grid. How may I assist you today?
+              </div>
+            </div>
+
+            <form class="chat-input-bar" id="chat-form">
+              <input 
+                type="text" 
+                id="user-input" 
+                class="chat-input" 
+                placeholder="Type a command (e.g. 'status', 'help', 'weather', 'diagnostics')..." 
+                autocomplete="off"
+              />
+              <button type="button" class="mic-btn" id="voice-input-btn" title="Speak into JARVIS (Speech to Text)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+              </button>
+              <button type="submit" class="send-btn" title="Transmit Directive">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </form>
+          </div>
+
+          <!-- Diagnostics & Quick Directives -->
+          <div class="sys-panel">
+            <!-- Real-time Live Time and Date Card -->
+            <div class="time-date-panel">
+              <span style="font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px;">LOCAL SYSTEM TEMPORAL MATRIX</span>
+              <div class="time-large" id="main-time-display">00:00:00 AM</div>
+              <div class="date-large" id="main-date-display">Monday, November 23, 2026</div>
+              <div class="timezone-sub" id="main-timezone-display">Timezone: UTC+05:30 (India Standard Time)</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span>NEURAL LOAD</span>
+                <span id="cpu-load-val">24%</span>
+              </div>
+              <div class="stat-bar-outer">
+                <div class="stat-bar-inner" id="cpu-bar" style="width: 24%"></div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span>SYNAPSE MEMORY</span>
+                <span id="mem-load-val">1.4 GB / 8 GB</span>
+              </div>
+              <div class="stat-bar-outer">
+                <div class="stat-bar-inner" id="mem-bar" style="width: 38%; background: linear-gradient(90deg, #a855f7, #3b82f6);"></div>
+              </div>
+            </div>
+
+            <div class="quick-commands">
+              <span class="cmd-title">QUICK PROTOCOLS</span>
+              <button class="cmd-btn" onclick="executeQuickCommand('run system diagnostic')">> Run Diagnostics</button>
+              <button class="cmd-btn" onclick="executeQuickCommand('show device telemetry')">> Device Telemetry</button>
+              <button class="cmd-btn" onclick="executeQuickCommand('security scan')">> Security Scan</button>
+              <button class="cmd-btn" onclick="executeQuickCommand('clear console')">> Clear Terminal</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Modular Control Grid Section -->
+      <section id="modules" class="features-section" style="margin-top: 3.5rem;">
+        <div class="section-head">
+          <h2>Stark Defense & Environment Controls</h2>
+          <p>Real-time telemetry feeds, global atmospheric satellites, and sub-system switches</p>
+        </div>
+
+        <div class="modules-grid">
+          <!-- Weather Module -->
+          <div class="module-card">
+            <div class="module-header">
+              <span class="module-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                ATMOSPHERIC RADAR
+              </span>
+              <span class="module-tag" id="weather-city-label">New York</span>
+            </div>
+            <div class="weather-display">
+              <div class="weather-temp" id="weather-temp">21°C</div>
+              <div class="weather-meta">
+                <div id="weather-condition">Condition: Clear Sky</div>
+                <div id="weather-wind">Wind: 14 km/h SW</div>
+              </div>
+            </div>
+            <div class="weather-city-input">
+              <input type="text" id="city-search-input" class="module-input" placeholder="Enter city (e.g. Tokyo, London)..." />
+              <button class="module-btn-sm" onclick="fetchWeatherForCity()">SCAN</button>
+            </div>
+          </div>
+
+          <!-- Protocol & Security Controls -->
+          <div class="module-card">
+            <div class="module-header">
+              <span class="module-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                SECURITY PROTOCOLS
+              </span>
+              <span class="module-tag">SEC-LVL 5</span>
+            </div>
+            <div class="toggle-row">
+              <span>Holographic HUD Projection</span>
+              <label class="switch">
+                <input type="checkbox" id="hud-toggle" checked onchange="toggleHudProjection(this)">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <span>Acoustic Confirmation Tone</span>
+              <label class="switch">
+                <input type="checkbox" id="sfx-toggle-check" checked onchange="toggleSoundCheckbox(this)">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <span>House Party Protocol</span>
+              <label class="switch">
+                <input type="checkbox" id="house-party-toggle" onchange="triggerHouseParty(this)">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- World Clock & Sat-Sync -->
+          <div class="module-card">
+            <div class="module-header">
+              <span class="module-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                GLOBAL SYNAPSE NODES
+              </span>
+              <span class="module-tag">ORBIT SYNC</span>
+            </div>
+            <div class="toggle-row">
+              <span>Malibu Headquarters</span>
+              <span class="sys-stat" id="clock-malibu">00:00 PST</span>
+            </div>
+            <div class="toggle-row">
+              <span>Stark Tower New York</span>
+              <span class="sys-stat" id="clock-ny">00:00 EST</span>
+            </div>
+            <div class="toggle-row">
+              <span>London Facility</span>
+              <span class="sys-stat" id="clock-london">00:00 GMT</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Integrated Web & Windows/Android Apps Launcher -->
+        <div style="margin-top: 2.5rem;">
+          <div class="section-head" style="margin-bottom: 1.5rem; text-align: left;">
+            <h3 style="font-size: 1.3rem; font-family: var(--font-mono); color: var(--cyan-glow);">// APPLICATION COMMUNICATIONS GRID</h3>
+            <p style="font-size: 0.85rem;">Instantly launch or command target applications directly from JARVIS</p>
+          </div>
+
+          <div class="apps-launcher-grid">
+            <a href="https://chat.openai.com" target="_blank" rel="noopener" class="app-tile" onclick="playBeep(950, 0.08)">
+              <div class="app-tile-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <span>ChatGPT</span>
+            </a>
+
+            <a href="https://gemini.google.com" target="_blank" rel="noopener" class="app-tile" onclick="playBeep(950, 0.08)">
+              <div class="app-tile-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <span>Gemini AI</span>
+            </a>
+
+            <a href="https://www.youtube.com" target="_blank" rel="noopener" class="app-tile" onclick="playBeep(950, 0.08)">
+              <div class="app-tile-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+              </div>
+              <span>YouTube</span>
+            </a>
+
+            <a href="https://mail.google.com" target="_blank" rel="noopener" class="app-tile" onclick="playBeep(950, 0.08)">
+              <div class="app-tile-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <span>Gmail</span>
+            </a>
+
+            <a href="https://web.whatsapp.com" target="_blank" rel="noopener" class="app-tile" onclick="playBeep(950, 0.08)">
+              <div class="app-tile-icon" style="color: #25d366;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </div>
+              <span>WhatsApp</span>
+            </a>
+
+            <!-- Phone Call Dial Link -->
+            <a href="tel:" id="phone-call-tile" class="app-tile" onclick="handlePhoneCallTile(event)">
+              <div class="app-tile-icon" style="color: #3b82f6;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <span>Phone Call</span>
+            </a>
+
+            <!-- PhonePe UPI Payment Link -->
+            <a href="https://www.phonepe.com" id="phonepe-tile" target="_blank" rel="noopener" class="app-tile" onclick="handlePhonePeTile(event)">
+              <div class="app-tile-icon" style="color: #6739b7;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/><path d="M7 15h.01"/><path d="M11 15h2"/></svg>
+              </div>
+              <span>PhonePe (UPI)</span>
+            </a>
+
+            <a href="https://open.spotify.com" target="_blank" rel="noopener" class="app-tile" onclick="playBeep(950, 0.08)">
+              <div class="app-tile-icon" style="color: #1db954;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 11.5c2.5-1 5.5-1 8 0"/><path d="M9 14.5c2-.7 4.5-.7 6.5 0"/><path d="M7 8.5c3.5-1.5 7.5-1.5 11 0"/></svg>
+              </div>
+              <span>Spotify</span>
+            </a>
+
+            <a href="https://maps.google.com" target="_blank" rel="noopener" class="app-tile" onclick="playBeep(950, 0.08)">
+              <div class="app-tile-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+              </div>
+              <span>Maps</span>
+            </a>
+
+            <a href="https://github.com" target="_blank" rel="noopener" class="app-tile" onclick="playBeep(950, 0.08)">
+              <div class="app-tile-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              </div>
+              <span>GitHub</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Showcase Section -->
+      <section id="features" class="features-section">
+        <div class="section-head">
+          <h2>Unified Multi-Platform Architecture</h2>
+          <p>Engineered to adapt flawlessly to Windows desktops and Android touch screens</p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10H12V2z"/><path d="M12 12L2.1 7.8"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <h3>Bi-Directional Voice Engine</h3>
+            <p>Integrated speech synthesis and real-time audio parsing. Speak directly to JARVIS and listen to fluid acoustic responses without extra hardware.</p>
+            <span class="feature-badge">Web Speech API</span>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3>Windows Desktop Integration</h3>
+            <p>Designed for multi-monitor setups, ultrawide displays, and high refresh-rate monitors with native keyboard shortcuts and system monitoring widgets.</p>
+            <span class="feature-badge">Windows 10 / 11 Native PWA</span>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </div>
+            <h3>Android Adaptive UI</h3>
+            <p>Touch-optimized responsive layouts, gestures, haptic feedback triggers, and offline caching via advanced Service Worker technology.</p>
+            <span class="feature-badge">Android Chrome / Mobile PWA</span>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <h3>Instant Offline Capabilities</h3>
+            <p>Instant boot time and resilient offline runtime. Even without active connection, JARVIS remains accessible on your home screen or taskbar.</p>
+            <span class="feature-badge">Zero Lag Engine</span>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <h3>Modular API Integration</h3>
+            <p>Pre-configured hooks to link Google Gemini, OpenAI, or local Ollama instances directly into your personal JARVIS neural bridge.</p>
+            <span class="feature-badge">LLM Ready</span>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <h3>Ironclad Security Protocol</h3>
+            <p>Client-side processing safeguards your telemetry and directives. No unsolicited tracking or data transmission outside your perimeter.</p>
+            <span class="feature-badge">Encrypted Sandbox</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Install & Download Hub -->
+      <section id="downloads" class="download-section">
+        <h2>Install JARVIS On Your Device</h2>
+        <p>Run JARVIS as an independent standalone desktop application or full-screen mobile app</p>
+
+        <div class="download-cards">
+          <!-- Windows Card -->
+          <div class="dl-card">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="1.5"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.949-1.899"/></svg>
+            <h4>JARVIS for Windows</h4>
+            <p>Pin to Taskbar or Desktop. Operates seamlessly as a standalone window without browser tabs or address bars.</p>
+            <button class="dl-button" onclick="triggerPwaPrompt()">
+              INSTALL FOR WINDOWS (PWA)
+            </button>
+          </div>
+
+          <!-- Android Card -->
+          <div class="dl-card">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="1.5"><path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.4143 13.8533 8.0818 12 8.0818c-1.8534 0-3.5902.3325-5.1368.868L4.841 5.4468a.416.416 0 00-.5677-.1521.416.416 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/></svg>
+            <h4>JARVIS for Android</h4>
+            <p>Add to Android Home Screen. Enjoy full-screen immersive interface, instant voice capture, and offline access.</p>
+            <button class="dl-button" onclick="triggerPwaPrompt()">
+              INSTALL FOR ANDROID (PWA)
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>STARK NEURAL NETWORKS // JARVIS INTERFACE v4.2 // COMPATIBLE WITH WINDOWS & ANDROID</p>
+    </footer>
+  </div>
+
+  <!-- API Key Modal (Gemini & ChatGPT) -->
+  <div class="modal-overlay" id="api-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>// NEURAL AI BRIDGES CONFIGURATION</h3>
+        <button class="close-btn" onclick="closeApiModal()">&times;</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+        Connect your preferred AI brain. Keys are stored locally in your browser.
+      </p>
+
+      <label style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--cyan-glow); display: block; margin-bottom: 4px;">
+        GOOGLE GEMINI API KEY:
+      </label>
+      <input type="password" id="gemini-key-input" class="module-input" style="width: 100%; margin-bottom: 1rem; padding: 0.6rem;" placeholder="Paste Gemini API Key (AIzaSy...)" />
+
+      <label style="font-family: var(--font-mono); font-size: 0.75rem; color: #10b981; display: block; margin-bottom: 4px;">
+        OPENAI CHATGPT API KEY:
+      </label>
+      <input type="password" id="openai-key-input" class="module-input" style="width: 100%; margin-bottom: 1rem; padding: 0.6rem;" placeholder="Paste OpenAI Key (sk-proj-...)" />
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+        <button class="module-btn-sm" style="border-color: rgba(255,255,255,0.2); color: #fff;" onclick="clearApiKeys()">Clear Keys</button>
+        <button class="module-btn-sm" style="background: var(--cyan-glow); color: #000; font-weight: bold;" onclick="saveApiKeys()">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Application -->
+  <script src="app.js"></script>
+</body>
+</html>
