@@ -148,19 +148,41 @@ const supabaseUrlInput = document.getElementById('supabase-url-input');
 const supabaseKeyInput = document.getElementById('supabase-key-input');
 const supabaseModalBtn = document.getElementById('supabase-modal-btn');
 
-function initSupabase() {
+async function testSupabaseConnection(sbUrl, sbKey) {
+  try {
+    const res = await fetch(`${sbUrl}/rest/v1/`, {
+      method: 'GET',
+      headers: {
+        'apikey': sbKey,
+        'Authorization': `Bearer ${sbKey}`
+      }
+    });
+    return res.status === 200 || res.status === 404;
+  } catch (err) {
+    console.warn("Supabase ping error:", err);
+    return false;
+  }
+}
+
+async function initSupabase() {
   const sbUrl = localStorage.getItem('jarvis_supabase_url');
   const sbKey = localStorage.getItem('jarvis_supabase_key');
   if (sbUrl && sbKey && window.supabase) {
     try {
       supabaseClient = window.supabase.createClient(sbUrl, sbKey);
-      updateSupabaseBtnStatus(true);
-      console.log("JARVIS connected to Supabase Cloud.");
+      const isAlive = await testSupabaseConnection(sbUrl, sbKey);
+      if (isAlive) {
+        updateSupabaseBtnStatus('connected');
+        console.log("JARVIS connected to Supabase Cloud.");
+      } else {
+        updateSupabaseBtnStatus('error');
+      }
     } catch (e) {
       console.warn("Supabase initialization error:", e);
+      updateSupabaseBtnStatus('error');
     }
   } else {
-    updateSupabaseBtnStatus(false);
+    updateSupabaseBtnStatus('disconnected');
   }
 }
 
@@ -176,15 +198,15 @@ function closeSupabaseModal() {
   if (supabaseModal) supabaseModal.style.display = 'none';
 }
 
-function saveSupabaseConfig() {
+async function saveSupabaseConfig() {
   const url = supabaseUrlInput ? supabaseUrlInput.value.trim() : '';
   const key = supabaseKeyInput ? supabaseKeyInput.value.trim() : '';
 
   if (url && key) {
     localStorage.setItem('jarvis_supabase_url', url);
     localStorage.setItem('jarvis_supabase_key', key);
-    initSupabase();
-    appendJarvisMessage("Supabase Cloud Database connected. Directives and memory logs will now sync to cloud storage, sir.");
+    await initSupabase();
+    appendJarvisMessage("Supabase Cloud Database verification sequence initiated. Directives will sync to cloud storage, sir.");
   } else {
     clearSupabaseConfig();
   }
@@ -197,16 +219,28 @@ function clearSupabaseConfig() {
   supabaseClient = null;
   if (supabaseUrlInput) supabaseUrlInput.value = '';
   if (supabaseKeyInput) supabaseKeyInput.value = '';
-  updateSupabaseBtnStatus(false);
+  updateSupabaseBtnStatus('disconnected');
   appendJarvisMessage("Supabase database disconnected. Operating in local-only cache.");
   closeSupabaseModal();
 }
 
-function updateSupabaseBtnStatus(connected) {
-  if (supabaseModalBtn) {
-    supabaseModalBtn.innerText = connected ? '⚡ Supabase Synced' : '⚡ Supabase Sync';
-    supabaseModalBtn.style.borderColor = connected ? '#10b981' : 'rgba(168, 85, 247, 0.4)';
-    supabaseModalBtn.style.color = connected ? '#10b981' : '#6ee7b7';
+function updateSupabaseBtnStatus(status) {
+  if (!supabaseModalBtn) return;
+  if (status === 'connected') {
+    supabaseModalBtn.innerText = '⚡ Supabase Synced';
+    supabaseModalBtn.style.borderColor = '#10b981';
+    supabaseModalBtn.style.color = '#10b981';
+    supabaseModalBtn.style.background = 'rgba(16, 185, 129, 0.2)';
+  } else if (status === 'error') {
+    supabaseModalBtn.innerText = '⚠️ Supabase Check Key';
+    supabaseModalBtn.style.borderColor = '#ef4444';
+    supabaseModalBtn.style.color = '#ef4444';
+    supabaseModalBtn.style.background = 'rgba(239, 68, 68, 0.15)';
+  } else {
+    supabaseModalBtn.innerText = '⚡ Supabase Sync';
+    supabaseModalBtn.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    supabaseModalBtn.style.color = '#6ee7b7';
+    supabaseModalBtn.style.background = 'rgba(16, 185, 129, 0.15)';
   }
 }
 
