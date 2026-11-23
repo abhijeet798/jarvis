@@ -63,6 +63,11 @@
           ⚡ Connect AI Brains
         </button>
 
+        <!-- Supabase Cloud Sync Button -->
+        <button id="supabase-modal-btn" class="api-key-btn" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: #6ee7b7;" title="Connect Supabase Cloud Database">
+          ⚡ Supabase Sync
+        </button>
+
         <div class="status-pill">
           <div class="status-indicator"></div>
           <span id="conn-status">ONLINE</span>
@@ -516,6 +521,37 @@
       </div>
     </div>
   </div>
+
+  <!-- Supabase Config Modal -->
+  <div class="modal-overlay" id="supabase-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="color: #10b981;">// SUPABASE CLOUD DATABASE SYNC</h3>
+        <button class="close-btn" onclick="closeSupabaseModal()">&times;</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+        Sync your JARVIS chat directives, logs, and settings to your <strong>Supabase PostgreSQL Cloud Database</strong>.
+      </p>
+
+      <label style="font-family: var(--font-mono); font-size: 0.75rem; color: #10b981; display: block; margin-bottom: 4px;">
+        SUPABASE PROJECT URL:
+      </label>
+      <input type="text" id="supabase-url-input" class="module-input" style="width: 100%; margin-bottom: 1rem; padding: 0.6rem;" placeholder="https://xyzcompany.supabase.co" />
+
+      <label style="font-family: var(--font-mono); font-size: 0.75rem; color: #10b981; display: block; margin-bottom: 4px;">
+        SUPABASE ANON KEY:
+      </label>
+      <input type="password" id="supabase-key-input" class="module-input" style="width: 100%; margin-bottom: 1rem; padding: 0.6rem;" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem;">
+        <button class="module-btn-sm" style="border-color: rgba(255,255,255,0.2); color: #fff;" onclick="clearSupabaseConfig()">Disconnect</button>
+        <button class="module-btn-sm" style="background: #10b981; color: #000; font-weight: bold;" onclick="saveSupabaseConfig()">Save & Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- JavaScript Application -->
   <script src="app.js"></script>

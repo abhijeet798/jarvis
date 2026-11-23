@@ -141,6 +141,93 @@ function clearApiKeys() {
   closeApiModal();
 }
 
+// Supabase Integration & Cloud Sync
+let supabaseClient = null;
+const supabaseModal = document.getElementById('supabase-modal');
+const supabaseUrlInput = document.getElementById('supabase-url-input');
+const supabaseKeyInput = document.getElementById('supabase-key-input');
+const supabaseModalBtn = document.getElementById('supabase-modal-btn');
+
+function initSupabase() {
+  const sbUrl = localStorage.getItem('jarvis_supabase_url');
+  const sbKey = localStorage.getItem('jarvis_supabase_key');
+  if (sbUrl && sbKey && window.supabase) {
+    try {
+      supabaseClient = window.supabase.createClient(sbUrl, sbKey);
+      updateSupabaseBtnStatus(true);
+      console.log("JARVIS connected to Supabase Cloud.");
+    } catch (e) {
+      console.warn("Supabase initialization error:", e);
+    }
+  } else {
+    updateSupabaseBtnStatus(false);
+  }
+}
+
+function openSupabaseModal() {
+  if (supabaseModal) {
+    if (supabaseUrlInput) supabaseUrlInput.value = localStorage.getItem('jarvis_supabase_url') || '';
+    if (supabaseKeyInput) supabaseKeyInput.value = localStorage.getItem('jarvis_supabase_key') || '';
+    supabaseModal.style.display = 'flex';
+  }
+}
+
+function closeSupabaseModal() {
+  if (supabaseModal) supabaseModal.style.display = 'none';
+}
+
+function saveSupabaseConfig() {
+  const url = supabaseUrlInput ? supabaseUrlInput.value.trim() : '';
+  const key = supabaseKeyInput ? supabaseKeyInput.value.trim() : '';
+
+  if (url && key) {
+    localStorage.setItem('jarvis_supabase_url', url);
+    localStorage.setItem('jarvis_supabase_key', key);
+    initSupabase();
+    appendJarvisMessage("Supabase Cloud Database connected. Directives and memory logs will now sync to cloud storage, sir.");
+  } else {
+    clearSupabaseConfig();
+  }
+  closeSupabaseModal();
+}
+
+function clearSupabaseConfig() {
+  localStorage.removeItem('jarvis_supabase_url');
+  localStorage.removeItem('jarvis_supabase_key');
+  supabaseClient = null;
+  if (supabaseUrlInput) supabaseUrlInput.value = '';
+  if (supabaseKeyInput) supabaseKeyInput.value = '';
+  updateSupabaseBtnStatus(false);
+  appendJarvisMessage("Supabase database disconnected. Operating in local-only cache.");
+  closeSupabaseModal();
+}
+
+function updateSupabaseBtnStatus(connected) {
+  if (supabaseModalBtn) {
+    supabaseModalBtn.innerText = connected ? '⚡ Supabase Synced' : '⚡ Supabase Sync';
+    supabaseModalBtn.style.borderColor = connected ? '#10b981' : 'rgba(168, 85, 247, 0.4)';
+    supabaseModalBtn.style.color = connected ? '#10b981' : '#6ee7b7';
+  }
+}
+
+async function syncDirectiveToSupabase(sender, message) {
+  if (!supabaseClient) return;
+  try {
+    // Inserts log into 'jarvis_logs' table in Supabase
+    await supabaseClient
+      .from('jarvis_logs')
+      .insert([{ sender: sender, content: message, created_at: new Date().toISOString() }]);
+  } catch (err) {
+    // Non-blocking fallback
+    console.debug("Supabase sync silent skip:", err);
+  }
+}
+
+if (supabaseModalBtn) {
+  supabaseModalBtn.addEventListener('click', openSupabaseModal);
+}
+window.addEventListener('load', initSupabase);
+
 function updateApiBtnStatus() {
   if (!apiModalBtn) return;
   const hasGemini = !!localStorage.getItem('jarvis_gemini_key');
@@ -637,6 +724,7 @@ function appendUserMessage(text) {
   bubble.innerHTML = `<span class="sender-tag">// OPERATOR</span>${escapeHtml(text)}`;
   chatHistory.appendChild(bubble);
   chatHistory.scrollTop = chatHistory.scrollHeight;
+  syncDirectiveToSupabase('operator', text);
 }
 
 function appendJarvisMessage(text, shouldSpeak = true) {
@@ -645,6 +733,7 @@ function appendJarvisMessage(text, shouldSpeak = true) {
   bubble.innerHTML = `<span class="sender-tag">// JARVIS</span>${escapeHtml(text)}`;
   chatHistory.appendChild(bubble);
   chatHistory.scrollTop = chatHistory.scrollHeight;
+  syncDirectiveToSupabase('jarvis', text);
 
   if (shouldSpeak) {
     speakText(text);
